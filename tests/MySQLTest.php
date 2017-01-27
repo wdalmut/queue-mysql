@@ -11,6 +11,7 @@ class MySQLTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->pdo = new PDO("mysql:dbname=test;host=127.0.0.1", "root", "root");
+        $this->pdo->query("DELETE FROM messages");
     }
 
     public function testSendMessage()
@@ -31,7 +32,7 @@ class MySQLTest extends \PHPUnit_Framework_TestCase
     public function testReceiveMessage()
     {
         $adapter = new MySQL($this->pdo);
-        $adapter->send("testqueue", "test", []);
+        $adapter->send("testqueue", "test", ['delay' => 0]);
 
         list($receipt, $message) = $adapter->receive("testqueue", []);
 
@@ -42,7 +43,7 @@ class MySQLTest extends \PHPUnit_Framework_TestCase
     public function testDeleteMessage()
     {
         $adapter = new MySQL($this->pdo);
-        $adapter->send("testqueue", "test", []);
+        $adapter->send("testqueue", "test", ['delay' => 0]);
 
         list($receipt, $message) = $adapter->receive("testqueue", []);
 

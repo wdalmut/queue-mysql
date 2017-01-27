@@ -43,7 +43,7 @@ class MySQL implements QueueInterface
 
         $sql = <<<EOF
 UPDATE `{$this->options["table_message"]}` SET consumer=?, timeout=?, read_on=UNIX_TIMESTAMP(NOW())
-WHERE read_on IS NULL OR (UNIX_TIMESTAMP(NOW()) > read_on + timeout)
+WHERE (read_on IS NULL OR (UNIX_TIMESTAMP(NOW()) > read_on + timeout)) AND UNIX_TIMESTAMP(NOW()) >= inserted_on
 ORDER BY inserted_on, id ASC
 LIMIT 1
 EOF
